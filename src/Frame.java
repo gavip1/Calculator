@@ -7,8 +7,22 @@ public class Frame extends JFrame {
     private JPanel mainPanel;
     private JButton One;
     private JButton Plus;
+    private JButton Two;
+    private JButton Three;
+    private JButton Four;
+    private JButton Five;
+    private JButton Six;
+    private JButton Seven;
+    private JButton Eight;
+    private JButton Nine;
+    private JButton Zero;
+    private JButton Subtract;
+    private JButton Multiply;
+    private JButton Divide;
+    private JButton Clear;
+    private JLabel NumberLabel;
     private int currentNum = 0;
-    private int nextNum = 0;
+    private String numString = "0";
 
     private enum State {
         PLUS,
@@ -23,8 +37,9 @@ public class Frame extends JFrame {
     public Frame() {
         setContentPane(mainPanel);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setSize(500, 700);
+        setSize(300, 400);
         setVisible(true);
+        NumberLabel.setText(String.valueOf(currentNum));
         Equal.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -35,8 +50,17 @@ public class Frame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (curState == State.NONE) {
-                    currentNum = 1; //Change this behavior to calculator 'append' format
-                } else nextNum = 1; //This too
+                    if (numString.equals("0")) {
+                        numString = "1";
+                    }
+                    else numString += "1";
+                }
+                else {
+                    currentNum = Integer.parseInt(numString);
+                    numString = "1";
+                    curState = State.NONE;
+                }
+                updateNum();
             }
         });
         Plus.addActionListener(new ActionListener() {
@@ -46,18 +70,24 @@ public class Frame extends JFrame {
                     currentNum = evaluate();
                 }
                 curState = State.PLUS;
+                updateNum();
             }
         });
     }
 
     public int evaluate() {
-        if (curState == State.PLUS) {
-            curState = State.NONE;
-            return (currentNum + nextNum);
-        } else if (curState == State.NONE) {
-            return (currentNum);
+        if(curState == State.PLUS)
+        {
+            currentNum += Integer.parseInt(numString);
+            numString = String.valueOf(currentNum);
         }
-        return 0;
+        updateNum();
+        curState = State.NONE;
+        return (currentNum);
+    }
+
+    public void updateNum() {
+        NumberLabel.setText(numString);
     }
 
     public static void main(String[] args){
